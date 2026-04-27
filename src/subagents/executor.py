@@ -84,6 +84,9 @@ class ExecutorAgent:
                 step.applied_fixes.append(f"{step.last_failure_hint.value}: {hinted_command}")
                 print(f"[Executor] Applied hint-based fix: {step.last_failure_hint.value}")
 
+        # Build tool schemas dynamically from ToolRegistry
+        tool_schemas = self._build_tool_schemas()
+        
         prompt = f"""
 Translate this logical step into a structured Action object.
 
@@ -98,16 +101,10 @@ Step Details:
 
 Previous Attempts: {step.retry_count}
 
-Generate an Action object with this structure:
-{{
-    "type": "terminal_command",
-    "payload": {{
-        "command": "The exact terminal command",
-        "cwd": "optional working directory"
-    }},
-    "description": "Brief description of what this action does",
-    "timeout": 30
-}}
+AVAILABLE TOOLS:
+{tool_schemas}
+
+Generate an Action object using the appropriate tool type.
 """
 
         # Emit prompt event if callback provided
@@ -340,3 +337,70 @@ Generate an Action object with this structure:
 
         # No fix could be applied
         return None
+
+    def _build_tool_schemas(self) -> str:
+        """
+        Build formatted tool schemas from ToolRegistry.
+        
+        This dynamically generates the tool documentation for the Executor prompt,
+        so adding new tools doesn't require modifying prompts.py.
+        
+        Returns:
+            Formatted string with all tool schemas and examples
+        """
+        from ..tools import ToolRegistry
+        
+        schemas = []
+        
+        for action_type in ToolRegistry.list_tools():
+            tool = ToolRegistry.get(action_type)
+            if tool is None:
+                continue
+            
+            schema = tool.get_schema()
+            examples = tool.get_examples()
+            
+            # Build schema section
+            schema_text = f"""
+{schema['type'].upper()}
+{schema['description']}
+
+PAYLOAD:
+{json.dumps(schema.get('payload_schema', {}), indent=2)}
+"""
+            
+            # Add selector strategies if available (for DOM-based tools)
+            if 'selector_strategies' in schema:
+                schema_text += f"\nSELECTOR STRATEGIES:\n"
+                for strategy in schema['selector_strategies']:
+                    schema_text += f"- {strategy}\n"
+            
+            # Add operation types if available (for tools with multiple operations)
+            if 'operation_types' in schema:
+                schema_text += f"\nOPERATION TYPES:\n"
+                for op_type in schema['operation_types']:
+                    schema_text += f"- {op_type}\n"
+            
+            # Add OS-specific syntax if available
+            if 'os_specific_syntax' in schema:
+                schema_text += f"\nOS-SPECIFIC SYNTAX:\n"
+                for os_name, syntax in schema['os_specific_syntax'].items():
+                    schema_text += f"- {os_name}: {syntax}\n"
+            
+            # Add failure hints if available
+            if 'failure_hints' in schema:
+                schema_text += f"\nFAILURE HINTS:\n"
+                for hint in schema['failure_hints']:
+                    schema_text += f"- {hint}\n"
+            
+            # Add examples
+            if examples:
+                schema_text += f"\nEXAMPLES:\n"
+                for i, example in enumerate(examples, 1):
+                    schema_text += f"\nExample {i}: {example.get('description', 'N/A')}\n"
+                    schema_text += json.dumps(example, indent=2)
+                    schema_text += "\n"
+            
+            schemas.append(schema_text)
+        
+        return "\n\n".join(schemas) if schemas else "No tools registered."

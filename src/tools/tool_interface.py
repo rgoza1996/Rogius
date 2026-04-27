@@ -126,7 +126,7 @@ class Tool(ABC):
     
     def classify_failure(self, result: ToolResult) -> str:
         """
-        Classify the failure type from a ToolResult.
+        Classify failure from ToolResult.
         
         Override this to provide tool-specific failure classification.
         
@@ -139,3 +139,33 @@ class Tool(ABC):
         if result.success:
             return "none"
         return "unknown"
+    
+    def get_schema(self) -> dict:
+        """
+        Return schema for this tool's action payload.
+        
+        This schema is used to dynamically build the Executor prompt.
+        
+        Returns:
+            Dictionary with schema information including:
+            - type: Action type string
+            - description: Tool description
+            - payload_schema: Payload structure
+            - selector_strategies: (optional) Selector strategies for DOM-based tools
+        """
+        return {
+            "type": self.action_type.value,
+            "description": f"Tool for {self.action_type.value}",
+            "payload_schema": {},
+        }
+    
+    def get_examples(self) -> list[dict]:
+        """
+        Return example actions for this tool.
+        
+        These examples are used to guide the LLM in generating valid actions.
+        
+        Returns:
+            List of example action dictionaries
+        """
+        return []

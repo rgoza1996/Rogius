@@ -144,6 +144,9 @@ class VerifierAgent:
         tool = ToolRegistry.get(action.type)
         tool_verification = tool.verify(action, tool_result) if tool else {"tool_verified": tool_result.success}
         
+        # Build tool-specific failure hints dynamically
+        tool_failure_hints = self._build_tool_failure_hints(action.type)
+        
         # Extract terminal-specific data for backward-compatible prompt
         artifacts = tool_result.artifacts if hasattr(tool_result, 'artifacts') else {}
         exit_code = artifacts.get("exit_code", 1 if not tool_result.success else 0)
@@ -176,6 +179,9 @@ Execution Result:
 Plan Progress:
 - Current Step: {step_index + 1} of {len(state.plan)}
 - Remaining Steps: {len(state.plan) - step_index - 1}
+
+TOOL-SPECIFIC FAILURE HINTS:
+{tool_failure_hints}
 
 Determine if this step succeeded and what to do next.
 """
@@ -309,3 +315,34 @@ Determine if this step succeeded and what to do next.
         print(f"[Verifier] Step {step_index}: {'✓ SUCCESS' if success else '✗ FAIL'} -> {next_action} (hint: {failure_hint.value})")
 
         return state, verification_result, failure_hint
+
+    def _build_tool_failure_hints(self, action_type) -> str:
+        """
+        Build tool-specific failure hints from ToolRegistry.
+        
+        This dynamically generates failure hint documentation for the Verifier prompt,
+        so adding new tools doesn't require modifying prompts.py.
+        
+        Args:
+            action_type: The ActionType enum or string value
+            
+        Returns:
+            Formatted string with tool-specific failure hints
+        """
+        from ..tools import ToolRegistry
+        
+        tool = ToolRegistry.get(action_type)
+        if tool is None:
+            return "No tool-specific failure hints available."
+        
+        schema = tool.get_schema()
+        failure_hints = schema.get('failure_hints', [])
+        
+        if not failure_hints:
+            return "No specific failure hints for this tool."
+        
+        hints_text = f"For {action_type.value}:\n"
+        for hint in failure_hints:
+            hints_text += f"- {hint}\n"
+        
+        return hints_text

@@ -580,6 +580,129 @@ class BrowserTool(Tool):
             return "missing_dependency"
         
         return "unknown"
+    
+    def get_schema(self) -> dict:
+        """
+        Return schema for web_crawl action.
+        """
+        return {
+            "type": "web_crawl",
+            "description": "Web automation using Playwright with DOM-based interaction (not OCR)",
+            "payload_schema": {
+                "session_id": "Optional existing session to reuse",
+                "url": "Starting URL",
+                "operations": "List of operations to perform",
+                "headless": "Whether to run in headless mode (default: False)",
+                "slow_mo": "Delay between actions in ms (default: 500)",
+                "browser_type": "chromium, firefox, or webkit (default: chromium)"
+            },
+            "selector_strategies": [
+                "data-testid attributes: [data-testid='submit-button']",
+                "ID selectors: #submit-button, #search-input",
+                "ARIA labels: [aria-label='Search'], [aria-label='Submit']",
+                "Name attributes: [name='search'], [name='email']",
+                "Placeholder: [placeholder='Enter email']",
+                "Text content: button:has-text('Submit'), a:has-text('Next')",
+                "Class + structure: .product-list > .product-item:first-child"
+            ],
+            "operation_types": [
+                "goto: Navigate to URL",
+                "click: Click element by selector",
+                "fill: Fill input field (clears existing)",
+                "type: Type text with keystroke delay (human-like)",
+                "select: Select dropdown option (by value, label, or index)",
+                "wait: Wait for element to appear/become visible",
+                "wait_for_load: Wait for page load state (networkidle, load, domcontentloaded)",
+                "extract: Extract text or attributes from elements",
+                "scroll: Scroll page (direction: up, down, top, bottom) or scroll element into view",
+                "hover: Hover over element (triggers hover states)",
+                "press: Press keyboard key (Enter, Tab, Escape, etc.)",
+                "evaluate: Execute JavaScript and return result",
+                "screenshot: Capture screenshot at this point",
+                "close: Close browser session (always include as final operation)"
+            ],
+            "failure_hints": [
+                "timeout: Page load or element wait timed out (try longer timeout or different selector)",
+                "missing_element: Element not found with given selector (try different selector strategy)",
+                "navigation_failed: Could not navigate to URL (check URL, network, or site availability)",
+                "permission_denied: Browser blocked by permissions or security settings",
+                "missing_dependency: Playwright or browser not installed",
+                "none: No specific classification or not a failure"
+            ]
+        }
+    
+    def get_examples(self) -> list[dict]:
+        """
+        Return example web_crawl actions.
+        """
+        return [
+            {
+                "payload": {
+                    "url": "https://google.com",
+                    "operations": [
+                        {"type": "fill", "selector": "[name='q']", "value": "python tutorial"},
+                        {"type": "press", "key": "Enter"},
+                        {"type": "wait", "selector": "#search", "timeout": 5000},
+                        {"type": "extract", "selector": "h3", "as": "results", "limit": 5},
+                        {"type": "close"}
+                    ],
+                    "headless": False,
+                    "slow_mo": 300
+                },
+                "description": "Search for Python tutorials on Google",
+                "timeout": 60
+            },
+            {
+                "payload": {
+                    "url": "https://amazon.com/s?k=laptop",
+                    "operations": [
+                        {"type": "wait", "selector": "[data-component-type='s-search-result']"},
+                        {"type": "extract", "selector": "[data-component-type='s-search-result'] h2 a span", "as": "titles", "limit": 10},
+                        {"type": "extract", "selector": ".a-price-whole", "as": "prices", "limit": 10},
+                        {"type": "close"}
+                    ],
+                    "headless": False
+                },
+                "description": "Extract laptop prices from Amazon search results",
+                "timeout": 60
+            },
+            {
+                "payload": {
+                    "session_id": "my_session_123",
+                    "url": "https://example.com/login",
+                    "operations": [
+                        {"type": "fill", "selector": "#username", "value": "user@example.com"},
+                        {"type": "fill", "selector": "#password", "value": "password123"},
+                        {"type": "click", "selector": "#login-button"},
+                        {"type": "wait", "selector": ".dashboard", "timeout": 10000},
+                        {"type": "goto", "url": "https://example.com/dashboard/reports"},
+                        {"type": "wait", "selector": ".report-table"},
+                        {"type": "extract", "selector": ".report-row", "as": "reports", "limit": 20},
+                        {"type": "close"}
+                    ]
+                },
+                "description": "Login and extract reports from dashboard",
+                "timeout": 120
+            },
+            {
+                "payload": {
+                    "url": "https://example.com",
+                    "operations": [
+                        {"type": "goto", "url": "https://example.com/products"},
+                        {"type": "wait", "selector": ".product-item"},
+                        {"type": "click", "selector": ".product-item:first-child"},
+                        {"type": "wait", "selector": ".product-details"},
+                        {"type": "extract", "selector": ".product-title", "as": "title"},
+                        {"type": "extract", "selector": ".product-price", "as": "price"},
+                        {"type": "close"}
+                    ],
+                    "headless": False,
+                    "slow_mo": 500
+                },
+                "description": "Navigate to products and extract first item details",
+                "timeout": 60
+            }
+        ]
 
 
 # Make BrowserTool available for import

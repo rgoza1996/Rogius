@@ -19,8 +19,6 @@ try:
     from .executor import ExecutorAgent
     from .verifier import VerifierAgent
     from .reporter import ReporterAgent
-    # Import tools to register them (TerminalTool auto-registers via @tool decorator)
-    from ..tools import TerminalTool, ToolRegistry, ActionType
 except ImportError:
     _src_dir = Path(__file__).parent.parent
     if str(_src_dir) not in sys.path:
@@ -32,8 +30,13 @@ except ImportError:
     from subagents.executor import ExecutorAgent
     from subagents.verifier import VerifierAgent
     from subagents.reporter import ReporterAgent
-    # Import tools to register them (TerminalTool auto-registers via @tool decorator)
+
+# Import tools to register them (TerminalTool auto-registers via @tool decorator)
+# Try absolute import first (when src is in path), then relative import
+try:
     from tools import TerminalTool, ToolRegistry, ActionType
+except ImportError:
+    from ..tools import TerminalTool, ToolRegistry, ActionType
 
 
 class RogiusMainAgent:

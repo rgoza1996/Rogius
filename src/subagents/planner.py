@@ -43,6 +43,30 @@ class PlannerAgent:
 
         state.phase = AgentPhase.PLANNING
 
+        # Build web search results section if available
+        web_search_section = ""
+        if state.environment_context.web_search_results:
+            web_search_section = "\nWeb Search Results (from investigation):\n"
+            for ws in state.environment_context.web_search_results:
+                query = ws.get('query', 'unknown')
+                results = ws.get('results', [])
+                if results:
+                    web_search_section += f"- Query '{query}': {len(results)} results found\n"
+                    for r in results[:2]:  # Show top 2
+                        web_search_section += f"  • {r.get('title', 'N/A')}: {r.get('snippet', 'N/A')[:100]}...\n"
+
+        # Build RAG results section if available
+        rag_section = ""
+        if state.environment_context.rag_search_results:
+            rag_section = "\nRAG Search Results (from project files):\n"
+            for rag in state.environment_context.rag_search_results:
+                query = rag.get('query', 'unknown')
+                results = rag.get('results', [])
+                if results:
+                    rag_section += f"- Query '{query}': {len(results)} results found\n"
+                    for r in results[:2]:  # Show top 2
+                        rag_section += f"  • {r.get('source', 'N/A')}: {r.get('content', 'N/A')[:100]}...\n"
+
         prompt = f"""
 User Goal: {state.user_goal}
 
@@ -54,6 +78,7 @@ Environment Context:
 - Hostname: {state.environment_context.hostname}
 - Available Commands: {', '.join(state.environment_context.available_commands[:5])}
 - Relevant Existing Files: {', '.join(state.environment_context.relevant_files[:5])}
+{web_search_section}{rag_section}
 
 Create a detailed execution plan with logical steps.
 """
@@ -96,6 +121,11 @@ Create a detailed execution plan with logical steps.
                 })
 
             steps_data = response.get("steps", [])
+            
+            # If no steps returned, trigger fallback by raising
+            if not steps_data:
+                print(f"[Planner] Warning: LLM returned empty steps, triggering fallback")
+                raise ValueError("LLM returned no steps in response")
 
             # Convert to PlanStep objects
             state.plan = []

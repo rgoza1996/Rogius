@@ -14,14 +14,18 @@ from pathlib import Path
 try:
     from .models import AgentState, AgentPhase, StepStatus, VerificationResult, FailureHint, EnvironmentContext, Action
     from .prompts import VERIFIER_SYSTEM_PROMPT
-    from ..tools import ToolResult, ToolRegistry, Action
 except ImportError:
     _src_dir = Path(__file__).parent.parent
     if str(_src_dir) not in sys.path:
         sys.path.insert(0, str(_src_dir))
     from subagents.models import AgentState, AgentPhase, StepStatus, VerificationResult, FailureHint, EnvironmentContext, Action
     from subagents.prompts import VERIFIER_SYSTEM_PROMPT
+
+# Import ToolRegistry - try absolute first, then relative
+try:
     from tools import ToolResult, ToolRegistry, Action
+except ImportError:
+    from ..tools import ToolResult, ToolRegistry, Action
 
 
 class VerifierAgent:

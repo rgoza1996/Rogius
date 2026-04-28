@@ -15,7 +15,6 @@ try:
     from .prompts import EXECUTOR_SYSTEM_PROMPT
     from ..tui.launcher import OSDetector, OperatingSystem
     from ..tui.shell_runner import ShellRunner, CommandResult
-    from ..tools import ToolRegistry, ToolResult
 except ImportError:
     _src_dir = Path(__file__).parent.parent
     if str(_src_dir) not in sys.path:
@@ -24,7 +23,12 @@ except ImportError:
     from subagents.prompts import EXECUTOR_SYSTEM_PROMPT
     from tui.launcher import OSDetector, OperatingSystem
     from tui.shell_runner import ShellRunner, CommandResult
+
+# Import ToolRegistry - try absolute first, then relative
+try:
     from tools import ToolRegistry, ToolResult
+except ImportError:
+    from ..tools import ToolRegistry, ToolResult
 
 
 class ExecutorAgent:

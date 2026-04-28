@@ -58,9 +58,9 @@ class FailureHint(str, Enum):
 class ActionType(str, Enum):
     """Types of actions that tools can execute."""
     TERMINAL_COMMAND = "terminal_command"
+    WEB_CRAWL = "web_crawl"
     # Future action types:
     # FILE_EDIT = "file_edit"
-    # WEB_CRAWL = "web_crawl"
 
 
 class Action(BaseModel):

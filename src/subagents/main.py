@@ -31,12 +31,12 @@ except ImportError:
     from subagents.verifier import VerifierAgent
     from subagents.reporter import ReporterAgent
 
-# Import tools to register them (TerminalTool auto-registers via @tool decorator)
+# Import tools to register them (auto-register via @tool decorator)
 # Try absolute import first (when src is in path), then relative import
 try:
-    from tools import TerminalTool, ToolRegistry, ActionType
+    from tools import TerminalTool, BrowserTool, ToolRegistry, ActionType
 except ImportError:
-    from ..tools import TerminalTool, ToolRegistry, ActionType
+    from ..tools import TerminalTool, BrowserTool, ToolRegistry, ActionType
 
 
 class RogiusMainAgent:

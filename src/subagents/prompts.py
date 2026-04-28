@@ -86,6 +86,18 @@ OS-SPECIFIC CONSIDERATIONS:
 - Windows: PowerShell commands (New-Item, Copy-Item, Remove-Item, Test-Path)
 - Linux/Mac: Bash commands (touch, cp, rm, test, which)
 
+AVAILABLE ACTION TYPES:
+- terminal_command: For file operations, system commands, local tools
+- web_crawl: For browser automation, web searches, clicking elements, taking screenshots
+
+Use web_crawl for any task that requires:
+- Opening websites or web pages
+- Searching on Google or other search engines
+- Clicking buttons or links on websites
+- Filling forms on websites
+- Taking screenshots of web pages
+- Extracting data from websites
+
 WEB SEARCH RESULTS:
 If the Investigator performed web searches, the results are in the environment_context.
 Use this external knowledge to:

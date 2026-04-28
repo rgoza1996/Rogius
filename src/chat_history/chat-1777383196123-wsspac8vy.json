@@ -1,0 +1,24 @@
+{
+  "id": "chat-1777383196123-wsspac8vy",
+  "title": "New Chat",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Make 5 .txt files named poem_x in D:/ and put a poem in them. Then delete a random 4 of them.\" (should use fallback plan if JSON parsing fails)",
+      "messageId": "msg-1777383198734-2c8k0nxd7",
+      "branches": [],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "assistant",
+      "content": "Error: API error: 413 - {\"error\":{\"message\":\"Request too large for model `llama-3.3-70b-versatile` in organization `org_01kpv3wcnqfgtb5t2z3rtckb0r` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Requested 13562, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}\n",
+      "messageId": "msg-1777383198863-c887ufb15",
+      "branches": [],
+      "currentBranchIndex": -1
+    }
+  ],
+  "createdAt": 1777383196123,
+  "updatedAt": 1777383198888,
+  "userTitled": false,
+  "userMessageCount": 1
+}

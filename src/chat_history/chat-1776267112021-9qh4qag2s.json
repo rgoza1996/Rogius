@@ -1,0 +1,37 @@
+{
+  "id": "chat-1776267112021-9qh4qag2s",
+  "title": "New Chat",
+  "messages": [
+    {
+      "role": "user",
+      "content": "hi",
+      "messageId": "msg-1776267113906-xz25vqcf5",
+      "branches": [],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! I'm Rogius, an AI assistant. What would you like to do?",
+      "messageId": "msg-1776270233518-35me31tvf",
+      "branches": [
+        {
+          "messageId": "msg-1776267113906-wljl5lh6t",
+          "content": "\n\nHello! How can I assist you today?",
+          "timestamp": 1776270230954,
+          "subtree": []
+        },
+        {
+          "messageId": "msg-1776270230954-he118iker",
+          "content": "Hello! How can I assist you today?",
+          "timestamp": 1776270233518,
+          "subtree": []
+        }
+      ],
+      "currentBranchIndex": -1
+    }
+  ],
+  "createdAt": 1776267112021,
+  "updatedAt": 1776270234316,
+  "userTitled": false,
+  "userMessageCount": 1
+}

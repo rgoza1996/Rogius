@@ -122,6 +122,7 @@ class AgentState(BaseModel):
     # Context and history
     environment_context: EnvironmentContext = Field(default_factory=EnvironmentContext)
     execution_history: list[dict] = Field(default_factory=list)
+    max_history_entries: int = 10  # Keep only last 10 entries to save tokens
     
     # Retry and circuit breaker tracking
     retry_counts: dict[str, int] = Field(default_factory=dict)  # step_id -> retry_count
@@ -135,3 +136,9 @@ class AgentState(BaseModel):
     
     class Config:
         arbitrary_types_allowed = True
+
+    def add_history_entry(self, entry: dict):
+        """Add entry to execution history, truncating if needed."""
+        self.execution_history.append(entry)
+        if len(self.execution_history) > self.max_history_entries:
+            self.execution_history = self.execution_history[-self.max_history_entries:]

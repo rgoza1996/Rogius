@@ -140,7 +140,7 @@ Create a detailed execution plan with logical steps.
                 print(f"[Planner] Step {i}: {step.description}")
                 print(f"[Planner]   Action: {step.logical_action}")
 
-            state.execution_history.append({
+            state.add_history_entry({
                 "phase": "planning",
                 "steps_created": len(state.plan),
                 "complexity": response.get("estimated_complexity", "unknown"),
@@ -157,7 +157,7 @@ Create a detailed execution plan with logical steps.
                 logical_action=state.user_goal,
                 status=StepStatus.PENDING
             )]
-            state.execution_history.append({
+            state.add_history_entry({
                 "phase": "planning",
                 "error": str(e),
                 "fallback": True,

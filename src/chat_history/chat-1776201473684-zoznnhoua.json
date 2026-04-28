@@ -1,0 +1,52 @@
+{
+  "id": "chat-1776201473684-zoznnhoua",
+  "title": "New Chat",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Create D:/HaikuTest, make 5 .tx. files, and fill them all with haikus.",
+      "messageId": "msg-1776261456760-nivbl2cnq",
+      "branches": [
+        {
+          "messageId": "msg-1776201535149-g9a9bpg1y",
+          "content": "Create D:/HaikuTest, make 5 .tx. files, and fill them all with haikus.",
+          "timestamp": 1776201570648,
+          "subtree": []
+        },
+        {
+          "messageId": "msg-1776201570648-6ewt73lnm",
+          "content": "Create D:/HaikuTest, make 5 .tx. files, and fill them all with haikus.",
+          "timestamp": 1776261456760,
+          "subtree": [
+            {
+              "role": "assistant",
+              "content": "\n",
+              "messageId": "msg-1776261333695-fkiwer1ss",
+              "branches": [
+                {
+                  "messageId": "msg-1776201608956-6fqvb3wvr",
+                  "content": "Error: network error",
+                  "timestamp": 1776261333695,
+                  "subtree": []
+                }
+              ],
+              "currentBranchIndex": -1
+            }
+          ]
+        }
+      ],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "assistant",
+      "content": "\n",
+      "messageId": "msg-1776261456761-yfqu3yvn4",
+      "branches": [],
+      "currentBranchIndex": -1
+    }
+  ],
+  "createdAt": 1776201473684,
+  "updatedAt": 1776261457127,
+  "userTitled": false,
+  "userMessageCount": 1
+}

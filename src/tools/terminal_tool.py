@@ -426,48 +426,13 @@ class TerminalTool(Tool):
         """
         return {
             "type": "terminal_command",
-            "description": "Execute shell commands across platforms (PowerShell on Windows, Bash on Linux/macOS)",
-            "payload_schema": {
-                "command": "The exact terminal command to execute",
-                "cwd": "Optional working directory (relative to project root)"
-            },
-            "os_specific_syntax": {
-                "windows": "Use PowerShell syntax: Get-ChildItem, New-Item, Test-Path, etc.",
-                "linux": "Use Bash syntax: ls, mkdir, test, etc.",
-                "macos": "Use Bash syntax: ls, mkdir, test, etc."
-            },
-            "failure_hints": [
-                "missing_binary: Command not in PATH",
-                "permission_denied: Access denied, need elevated privileges",
-                "wrong_cwd: Working directory incorrect",
-                "missing_env_var: Required environment variable not set",
-                "invalid_arguments: Arguments malformed or incompatible with OS",
-                "host_unreachable: SSH/network connection failed",
-                "timeout: Command timed out",
-                "missing_dependency: Required tool/library not installed"
-            ]
+            "payload": {"command": "exact command", "cwd": "optional working dir"},
+            "failure_hints": ["missing_binary", "permission_denied", "wrong_cwd", "missing_env_var", "invalid_arguments", "host_unreachable", "timeout", "missing_dependency"]
         }
     
     def get_examples(self) -> list[dict]:
-        """
-        Return example terminal_command actions.
-        """
-        return [
-            {
-                "payload": {
-                    "command": "New-Item -Path 'file.txt' -ItemType File -Value 'Hello World'"
-                },
-                "description": "Create a file with content (Windows)",
-                "timeout": 30
-            },
-            {
-                "payload": {
-                    "command": "echo 'Hello World' > file.txt"
-                },
-                "description": "Create a file with content (Linux/macOS)",
-                "timeout": 30
-            }
-        ]
+        """Return example terminal_command actions."""
+        return []
 
 
 # Make TerminalTool available for import

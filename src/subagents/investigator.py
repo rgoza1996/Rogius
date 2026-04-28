@@ -229,7 +229,7 @@ Consider:
             )
 
             # Record in history
-            state.execution_history.append({
+            state.add_history_entry({
                 "phase": "investigation",
                 "commands_run": len(all_commands),
                 "web_searches": len(web_search_results),
@@ -251,7 +251,7 @@ Consider:
                 hostname=system_info.get("hostname", ""),
                 web_search_results=[]
             )
-            state.execution_history.append({
+            state.add_history_entry({
                 "phase": "investigation",
                 "error": str(e),
                 "fallback": True

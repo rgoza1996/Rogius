@@ -136,7 +136,7 @@ class VerifierAgent:
             print(f"[Verifier] CIRCUIT BREAKER: Step {step_index} exceeded max retries ({state.max_retries_per_step})")
             step.status = StepStatus.ERROR
             step.error = f"Max retries ({state.max_retries_per_step}) exceeded"
-            state.execution_history.append({
+            state.add_history_entry({
                 "phase": "verification",
                 "step_index": step_index,
                 "result": "max_retries",
@@ -282,7 +282,7 @@ Determine if this step succeeded and what to do next.
 
         # Record in history
         exit_code = artifacts.get("exit_code", 0 if tool_result.success else 1)
-        state.execution_history.append({
+        state.add_history_entry({
             "phase": "verification",
             "step_index": step_index,
             "success": success,
@@ -337,16 +337,12 @@ Determine if this step succeeded and what to do next.
         
         tool = ToolRegistry.get(action_type)
         if tool is None:
-            return "No tool-specific failure hints available."
+            return ""
         
         schema = tool.get_schema()
         failure_hints = schema.get('failure_hints', [])
         
         if not failure_hints:
-            return "No specific failure hints for this tool."
+            return ""
         
-        hints_text = f"For {action_type.value}:\n"
-        for hint in failure_hints:
-            hints_text += f"- {hint}\n"
-        
-        return hints_text
+        return ", ".join(failure_hints)

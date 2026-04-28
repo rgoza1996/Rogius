@@ -178,7 +178,7 @@ Generate an Action object using the appropriate tool type.
             # Fallback: create basic command from logical action
             fallback_command = self._generate_fallback_command(
                 step.logical_action,
-                state.environment_context
+                state.execution_history
             )
             action = Action(
                 type=ActionType.TERMINAL_COMMAND,
@@ -192,14 +192,11 @@ Generate an Action object using the appropriate tool type.
         result = await ToolRegistry.execute(action, state.environment_context.dict())
 
         # Update step with action and result (backward compatible)
-        step.action = action
-        step.command = action.payload.get("command", "")  # Legacy support
-
-        state.execution_history.append({
+        state.add_history_entry({
             "phase": "execution",
             "step_index": idx,
             "action_type": action.type.value,
-            "command": action.payload.get("command", ""),
+            "payload": action.payload,
             "success": result.success
         })
 
@@ -350,7 +347,7 @@ Generate an Action object using the appropriate tool type.
         so adding new tools doesn't require modifying prompts.py.
         
         Returns:
-            Formatted string with all tool schemas and examples
+            Formatted string with all tool schemas
         """
         from ..tools import ToolRegistry
         
@@ -362,49 +359,9 @@ Generate an Action object using the appropriate tool type.
                 continue
             
             schema = tool.get_schema()
-            examples = tool.get_examples()
             
-            # Build schema section
-            schema_text = f"""
-{schema['type'].upper()}
-{schema['description']}
-
-PAYLOAD:
-{json.dumps(schema.get('payload_schema', {}), indent=2)}
-"""
-            
-            # Add selector strategies if available (for DOM-based tools)
-            if 'selector_strategies' in schema:
-                schema_text += f"\nSELECTOR STRATEGIES:\n"
-                for strategy in schema['selector_strategies']:
-                    schema_text += f"- {strategy}\n"
-            
-            # Add operation types if available (for tools with multiple operations)
-            if 'operation_types' in schema:
-                schema_text += f"\nOPERATION TYPES:\n"
-                for op_type in schema['operation_types']:
-                    schema_text += f"- {op_type}\n"
-            
-            # Add OS-specific syntax if available
-            if 'os_specific_syntax' in schema:
-                schema_text += f"\nOS-SPECIFIC SYNTAX:\n"
-                for os_name, syntax in schema['os_specific_syntax'].items():
-                    schema_text += f"- {os_name}: {syntax}\n"
-            
-            # Add failure hints if available
-            if 'failure_hints' in schema:
-                schema_text += f"\nFAILURE HINTS:\n"
-                for hint in schema['failure_hints']:
-                    schema_text += f"- {hint}\n"
-            
-            # Add examples
-            if examples:
-                schema_text += f"\nEXAMPLES:\n"
-                for i, example in enumerate(examples, 1):
-                    schema_text += f"\nExample {i}: {example.get('description', 'N/A')}\n"
-                    schema_text += json.dumps(example, indent=2)
-                    schema_text += "\n"
-            
+            # Build minimal schema section
+            schema_text = f"{schema['type']}: {json.dumps(schema.get('payload', {}))}"
             schemas.append(schema_text)
         
-        return "\n\n".join(schemas) if schemas else "No tools registered."
+        return "\n".join(schemas) if schemas else "No tools registered."

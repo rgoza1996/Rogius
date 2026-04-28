@@ -1,0 +1,24 @@
+{
+  "id": "chat-1776368738506-rfk43769t",
+  "title": "New Chat",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Weather in vegas today?",
+      "messageId": "msg-1776368742812-u0b451dxv",
+      "branches": [],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n\n```terminal\n$ curl -s 'https://wttr.in/Vegas?format=%+1' 2>/dev/null || curl -sL 'https://wttr.in/Vegas' 2>/dev/null | head -20\nAt line:1 char:56\r\n+ curl -s 'https://wttr.in/Vegas?format=%+1' 2>/dev/null || curl -sL 'h ...\r\n+                                                        ~~\r\nThe token '||' is not a valid statement separator in this version.\r\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\r\n    + FullyQualifiedErrorId : InvalidEndOfLine\n```",
+      "messageId": "msg-1776368742812-aj8r7wuzd",
+      "branches": [],
+      "currentBranchIndex": -1
+    }
+  ],
+  "createdAt": 1776368738506,
+  "updatedAt": 1776368746061,
+  "userTitled": false,
+  "userMessageCount": 1
+}

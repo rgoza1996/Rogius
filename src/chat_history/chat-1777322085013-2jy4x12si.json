@@ -1,0 +1,60 @@
+{
+  "id": "chat-1777322085013-2jy4x12si",
+  "title": "Play Universal Paperclips Game",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Use the web tool. Could you go play universal paperclips for me?",
+      "messageId": "msg-1777322464483-jy8y6m4pk",
+      "branches": [
+        {
+          "messageId": "msg-1777322096278-41ty0qq4r",
+          "content": "Could you go play universal paperclips for me?",
+          "timestamp": 1777322464483,
+          "subtree": [
+            {
+              "role": "assistant",
+              "content": "I don't have access to universal paperclips information",
+              "messageId": "msg-1777322392504-qwb5x9mlk",
+              "branches": [
+                {
+                  "messageId": "msg-1777322378104-hl5tgeeit",
+                  "content": "Error: API error: 400 - {\"error\":{\"message\":\"`max_tokens` must be less than or equal to `8192`, the maximum value for `max_tokens` is less than the `context_window` for this model\",\"type\":\"invalid_request_error\",\"param\":\"max_tokens\"}}\n",
+                  "timestamp": 1777322392504,
+                  "subtree": []
+                }
+              ],
+              "currentBranchIndex": -1
+            }
+          ]
+        }
+      ],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "assistant",
+      "content": "I don't have access to the web tool or any external browsing capabilities. I'm a command-line AI assistant, and my interactions are limited to the tools and functions provided. I can help with tasks that involve file operations, system information, and other local computations, but I cannot access external websites or play online games like Universal Paperclips. \n\nHowever, I can help you explore the game locally if you have it installed on your system. Or I can provide general information about the game if that would be helpful.",
+      "messageId": "msg-1777322464483-uasdtuta8",
+      "branches": [],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "user",
+      "content": "Search for information about universal paperclips",
+      "messageId": "msg-1777323151326-gvd3vqrqt",
+      "branches": [],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "assistant",
+      "content": "I don't have access to web browsing capabilities or external information sources. However, I can suggest some alternatives to find information about Universal Paperclips:\n\n1. You can search for Universal Paperclips on your favorite search engine, such as Google.\n2. You can check online platforms like Wikipedia, Reddit, or gaming forums for information about the game.\n3. If you have a specific question about Universal Paperclips, I can try to help you with general knowledge or provide guidance on how to find the answer.\n\nLet me know if there's anything else I can help you with!",
+      "messageId": "msg-1777323151327-1ntywoixd",
+      "branches": [],
+      "currentBranchIndex": -1
+    }
+  ],
+  "createdAt": 1777322085013,
+  "updatedAt": 1777323156212,
+  "userTitled": false,
+  "userMessageCount": 2
+}

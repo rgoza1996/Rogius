@@ -665,42 +665,6 @@ class BrowserTool(Tool):
                 },
                 "description": "Extract laptop prices from Amazon search results",
                 "timeout": 60
-            },
-            {
-                "payload": {
-                    "session_id": "my_session_123",
-                    "url": "https://example.com/login",
-                    "operations": [
-                        {"type": "fill", "selector": "#username", "value": "user@example.com"},
-                        {"type": "fill", "selector": "#password", "value": "password123"},
-                        {"type": "click", "selector": "#login-button"},
-                        {"type": "wait", "selector": ".dashboard", "timeout": 10000},
-                        {"type": "goto", "url": "https://example.com/dashboard/reports"},
-                        {"type": "wait", "selector": ".report-table"},
-                        {"type": "extract", "selector": ".report-row", "as": "reports", "limit": 20},
-                        {"type": "close"}
-                    ]
-                },
-                "description": "Login and extract reports from dashboard",
-                "timeout": 120
-            },
-            {
-                "payload": {
-                    "url": "https://example.com",
-                    "operations": [
-                        {"type": "goto", "url": "https://example.com/products"},
-                        {"type": "wait", "selector": ".product-item"},
-                        {"type": "click", "selector": ".product-item:first-child"},
-                        {"type": "wait", "selector": ".product-details"},
-                        {"type": "extract", "selector": ".product-title", "as": "title"},
-                        {"type": "extract", "selector": ".product-price", "as": "price"},
-                        {"type": "close"}
-                    ],
-                    "headless": False,
-                    "slow_mo": 500
-                },
-                "description": "Navigate to products and extract first item details",
-                "timeout": 60
             }
         ]
 

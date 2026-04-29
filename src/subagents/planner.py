@@ -47,25 +47,34 @@ class PlannerAgent:
         web_search_section = ""
         if state.environment_context.web_search_results:
             web_search_section = "\nWeb Search Results (from investigation):\n"
-            for ws in state.environment_context.web_search_results:
-                query = ws.get('query', 'unknown')
-                results = ws.get('results', [])
-                if results:
-                    web_search_section += f"- Query '{query}': {len(results)} results found\n"
-                    for r in results[:2]:  # Show top 2
-                        web_search_section += f"  • {r.get('title', 'N/A')}: {r.get('snippet', 'N/A')[:100]}...\n"
+            for web in state.environment_context.web_search_results:
+                if isinstance(web, dict):
+                    query = web.get('query', 'unknown')
+                    results_str = web.get('results', '')
+                    if results_str:
+                        web_search_section += f"- Query '{query}':\n{results_str}\n"
+                elif isinstance(web, str):
+                    web_search_section += f"- {web}\n"
 
         # Build RAG results section if available
         rag_section = ""
         if state.environment_context.rag_search_results:
             rag_section = "\nRAG Search Results (from project files):\n"
             for rag in state.environment_context.rag_search_results:
-                query = rag.get('query', 'unknown')
-                results = rag.get('results', [])
-                if results:
-                    rag_section += f"- Query '{query}': {len(results)} results found\n"
-                    for r in results[:2]:  # Show top 2
-                        rag_section += f"  • {r.get('source', 'N/A')}: {r.get('content', 'N/A')[:100]}...\n"
+                if isinstance(rag, dict):
+                    query = rag.get('query', 'unknown')
+                    results = rag.get('results', [])
+                    if isinstance(results, list):
+                        rag_section += f"- Query '{query}': {len(results)} results found\n"
+                        for r in results[:2]:  # Show top 2
+                            if isinstance(r, dict):
+                                rag_section += f"  • {r.get('source', 'N/A')}: {r.get('content', 'N/A')[:100]}...\n"
+                            else:
+                                rag_section += f"  • {str(r)[:100]}...\n"
+                    elif isinstance(results, str):
+                        rag_section += f"- Query '{query}':\n{results}\n"
+                elif isinstance(rag, str):
+                    rag_section += f"- {rag}\n"
 
         prompt = f"""
 User Goal: {state.user_goal}

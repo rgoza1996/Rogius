@@ -1,0 +1,24 @@
+{
+  "id": "chat-1777488938943-86e6a7a5o",
+  "title": "Summer Golf Poem",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Write a poem about summer and golf",
+      "messageId": "msg-1777488947053-33pak9vgj",
+      "branches": [],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "assistant",
+      "content": "Error: API error: 413 - {\"error\":{\"message\":\"Request too large for model `openai/gpt-oss-safeguard-20b` in organization `org_01kpv3wcnqfgtb5t2z3rtckb0r` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 8982, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}\n",
+      "messageId": "msg-1777489975774-i8gghisvq",
+      "branches": [],
+      "currentBranchIndex": -1
+    }
+  ],
+  "createdAt": 1777488938943,
+  "updatedAt": 1777489975800,
+  "userTitled": false,
+  "userMessageCount": 1
+}

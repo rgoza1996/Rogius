@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 # Note: ai_client is in tui folder - adjust import path as needed
-# from ..tui.ai_client import AIClient, ChatMessage
+from tui.ai_client import ChatMessage
 
 
 @dataclass
@@ -152,19 +152,18 @@ class RenamerAgent:
                 content += "..."
             conversation.append(f"{role}: {content}")
 
+        conv_text = '\n\n'.join(conversation)
         prompt_text = f"""Based on the following conversation, generate a concise 2-5 word title that captures the main topic. The title should be descriptive but brief. Respond with ONLY the title, nothing else.
 
 Conversation:
-{'\n\n'.join(conversation)}
+{conv_text}
 
 Title:"""
 
         try:
             chat_messages = [
-                # ChatMessage(role="system", content="You are a helpful assistant that generates short, descriptive titles for conversations."),
-                # ChatMessage(role="user", content=prompt_text)
-                {"role": "system", "content": "You are a helpful assistant that generates short, descriptive titles for conversations."},
-                {"role": "user", "content": prompt_text}
+                ChatMessage(role="system", content="You are a helpful assistant that generates short, descriptive titles for conversations."),
+                ChatMessage(role="user", content=prompt_text)
             ]
 
             content_parts = []

@@ -97,6 +97,7 @@ export function useChat(): UseChatReturn {
           ttsEndpoint: backendSettings.tts_endpoint,
           ttsApiKey: backendSettings.tts_api_key,
           ttsVoice: backendSettings.tts_voice,
+          ttsModel: (backendSettings as any).tts_model || '',
           autoPlayAudio: backendSettings.auto_play_audio
         }
         setConfig(backendConfig)

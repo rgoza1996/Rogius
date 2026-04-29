@@ -128,7 +128,7 @@ class AgentState(BaseModel):
     retry_counts: dict[str, int] = Field(default_factory=dict)  # step_id -> retry_count
     max_retries_per_step: int = 999
     global_retry_count: int = 0
-    max_global_retries: int = 20
+    max_global_retries: int = 100
     
     # Final result
     final_report: Optional[str] = None

@@ -1,0 +1,11 @@
+{
+  "name": "Chat Lifecycle Test",
+  "description": "Basic test of chat creation and state management",
+  "commands": [
+    { "action": "create_chat" },
+    { "action": "assert", "params": { "type": "has_chat", "expected": true } },
+    { "action": "send_message", "params": { "content": "Hello from automated test" } },
+    { "action": "assert", "params": { "type": "input_equals", "expected": "Hello from automated test" } },
+    { "action": "get_state" }
+  ]
+}

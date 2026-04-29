@@ -37,6 +37,7 @@ export interface APIConfig {
   ttsEndpoint: string
   ttsApiKey: string
   ttsVoice: string
+  ttsModel: string  // Optional model ID for Groq-style TTS (e.g. canopylabs/orpheus-3b)
   systemPrompt: string
   systemPromptEditable: boolean
   autoPlayAudio: boolean
@@ -144,6 +145,7 @@ const DEFAULT_CONFIG: APIConfig = {
   ttsEndpoint: 'http://100.71.89.62:8880/v1/audio/speech',
   ttsApiKey: '',
   ttsVoice: 'af_bella',
+  ttsModel: '',
   systemPrompt: DEFAULT_SYSTEM_PROMPT,
   systemPromptEditable: false,
   autoPlayAudio: false,
@@ -377,17 +379,27 @@ export async function generateSpeech(
   config: APIConfig
 ): Promise<Blob> {
   try {
+    const body: Record<string, unknown> = {
+      input: text,
+      voice: config.ttsVoice,
+      speed: 1.0,
+      response_format: 'wav',
+    }
+    // Include model field for Groq/OpenAI-style TTS
+    if (config.ttsModel) {
+      body.model = config.ttsModel
+    } else if (config.ttsEndpoint.includes('groq.com')) {
+      // Groq always needs a model; fall back to voice as model ID
+      body.model = config.ttsVoice
+    }
+
     const response = await fetch(config.ttsEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...(config.ttsApiKey && { 'Authorization': `Bearer ${config.ttsApiKey}` }),
       },
-      body: JSON.stringify({
-        input: text,
-        voice: config.ttsVoice,
-        speed: 1.0,
-      } as TTSRequest),
+      body: JSON.stringify(body),
     })
 
     if (!response.ok) {

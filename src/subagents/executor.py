@@ -178,7 +178,7 @@ Generate an Action object using the appropriate tool type.
             # Fallback: create basic command from logical action
             fallback_command = self._generate_fallback_command(
                 step.logical_action,
-                state.execution_history
+                state.environment_context
             )
             action = Action(
                 type=ActionType.TERMINAL_COMMAND,
@@ -227,11 +227,20 @@ Generate an Action object using the appropriate tool type.
             else:
                 return "cp source dest"
 
-        elif "list" in action_lower or "show" in action_lower:
+        elif "navigate" in action_lower or "google" in action_lower or "browser" in action_lower:
             if is_windows:
-                return "Get-ChildItem"
+                # Try to open Chrome or default browser
+                url = "https://www.google.com" if "google" in action_lower else "https://localhost:3000"
+                return f'Start-Process "chrome.exe" "{url}"'
             else:
-                return "ls -la"
+                return "open https://google.com"
+
+        elif "screenshot" in action_lower:
+            if is_windows:
+                # Use PowerShell to take a screenshot if possible
+                return 'Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait("{PRTSC}"); Start-Sleep -Seconds 1; $img = [System.Windows.Forms.Clipboard]::GetImage(); if ($img) { $img.Save("screenshot.png", [System.Drawing.Imaging.ImageFormat]::Png); Write-Output "Screenshot saved to screenshot.png" } else { Write-Error "Failed to capture clipboard" }'
+            else:
+                return "screencapture screenshot.png"
 
         # Default: echo the action
         if is_windows:
@@ -349,7 +358,7 @@ Generate an Action object using the appropriate tool type.
         Returns:
             Formatted string with all tool schemas
         """
-        from ..tools import ToolRegistry
+
         
         schemas = []
         

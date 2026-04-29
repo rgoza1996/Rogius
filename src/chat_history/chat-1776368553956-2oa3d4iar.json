@@ -1,6 +1,6 @@
 {
   "id": "chat-1776368553956-2oa3d4iar",
-  "title": "New Chat",
+  "title": "Testing Multi-Agent Systems",
   "messages": [
     {
       "role": "user",
@@ -145,7 +145,7 @@
     }
   ],
   "createdAt": 1776368553956,
-  "updatedAt": 1776374613311,
+  "updatedAt": 1777490312071,
   "userTitled": false,
   "userMessageCount": 3
 }

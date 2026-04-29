@@ -54,6 +54,7 @@ export function SettingsModal({ config, systemInfo, onSave, onClose }: SettingsM
         tts_endpoint: formData.ttsEndpoint,
         tts_api_key: formData.ttsApiKey,
         tts_voice: formData.ttsVoice,
+        tts_model: formData.ttsModel || '',
         auto_play_audio: formData.autoPlayAudio,
         max_retries: formData.maxRetries
       })
@@ -678,17 +679,47 @@ ${chats.map(c => `  ${c.id}.json: ${c.title.substring(0, 30)} (${c.messages.leng
 
               <div>
                 <label className="block text-sm font-medium mb-1.5">
-                  Voice
+                  TTS Model (optional)
                 </label>
                 <input
                   type="text"
-                  value={formData.ttsVoice}
-                  onChange={(e) => setFormData({ ...formData, ttsVoice: e.target.value })}
-                  placeholder="af_bella"
+                  value={formData.ttsModel}
+                  onChange={(e) => setFormData({ ...formData, ttsModel: e.target.value })}
+                  placeholder="canopylabs/orpheus-3b"
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  KokoroTTS voice code (e.g., af_bella, af_sarah, am_adam)
+                  Model ID for Groq/OpenAI-style TTS (e.g. canopylabs/orpheus-3b). Leave empty for KokoroTTS.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1.5">
+                  Voice
+                </label>
+                {formData.ttsEndpoint.includes('groq.com') ? (
+                  <select
+                    value={formData.ttsVoice}
+                    onChange={(e) => setFormData({ ...formData, ttsVoice: e.target.value })}
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    {['autumn', 'diana', 'hannah', 'austin', 'daniel', 'troy'].map(v => (
+                      <option key={v} value={v}>{v}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={formData.ttsVoice}
+                    onChange={(e) => setFormData({ ...formData, ttsVoice: e.target.value })}
+                    placeholder="af_bella"
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                )}
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {formData.ttsEndpoint.includes('groq.com')
+                    ? 'Groq Orpheus voices: autumn, diana, hannah, austin, daniel, troy'
+                    : 'KokoroTTS voice code (e.g., af_bella, af_sarah, am_adam)'}
                 </p>
               </div>
 

@@ -98,7 +98,7 @@ class RogiusMainAgent:
                 return state
 
             # Phase 3-4: Execution Loop
-            max_iterations = 100  # Global safety limit
+            max_iterations = 500  # Global safety limit
             iteration = 0
 
             while iteration < max_iterations:
@@ -272,7 +272,7 @@ class RogiusMainAgent:
             yield {'type': 'start', 'goal': user_goal, 'total_steps': total_steps}
 
             # Phase 3-4: Execution Loop with streaming
-            max_iterations = 100
+            max_iterations = 500
             iteration = 0
             completed = 0
 
@@ -458,7 +458,6 @@ class RogiusMainAgent:
             # Yield reporter events
             for event in reporter_events:
                 yield event
-
             # Emit final report
             yield {
                 'type': 'report',
@@ -466,7 +465,9 @@ class RogiusMainAgent:
             }
 
         except Exception as e:
-            yield {'type': 'error', 'message': str(e)}
+            import traceback
+            tb_str = traceback.format_exc()
+            yield {'type': 'error', 'message': f"{str(e)}\nTraceback:\n{tb_str}"}
 
     def _generate_final_report(
         self,

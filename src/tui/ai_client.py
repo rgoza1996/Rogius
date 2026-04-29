@@ -71,6 +71,7 @@ class APIConfig:
     tts_endpoint: str = "http://100.71.89.62:8880/v1/audio/speech"
     tts_api_key: str = ""
     tts_voice: str = "af_bella"
+    tts_model: str = ""  # Optional model ID for Groq-style TTS
     system_prompt: str = ""
     auto_play_audio: bool = False
 
@@ -509,18 +510,42 @@ class AIClient:
         text: str,
         voice: Optional[str] = None
     ) -> bytes:
-        """Generate speech from text using TTS API."""
+        """Generate speech from text using TTS API.
+        
+        Supports both KokoroTTS (voice only) and OpenAI-compatible APIs
+        like Groq that require a separate model + voice field.
+        
+        Config fields:
+          tts_voice: The voice name (e.g. 'autumn', 'af_bella')
+          tts_model: The model ID (e.g. 'canopylabs/orpheus-v1-english')
+                     If empty, falls back to tts_voice for backward-compat.
+        """
         session = await self._get_session()
+        
+        voice_val = voice or self.config.tts_voice
+        # tts_model is a new optional field; fall back to tts_voice if not set
+        model_val = getattr(self.config, 'tts_model', '') or voice_val
         
         payload = {
             "input": text,
-            "voice": voice or self.config.tts_voice,
-            "speed": 1.0
+            "voice": voice_val,
+            "speed": 1.0,
+            "response_format": "wav"
         }
+        
+        # Only include 'model' if it's set (Groq/OpenAI style)
+        # KokoroTTS does not use this field
+        if model_val and model_val != voice_val:
+            payload["model"] = model_val
+        elif "groq.com" in self.config.tts_endpoint:
+            # Groq always requires a model field
+            payload["model"] = model_val
         
         headers = {"Content-Type": "application/json"}
         if self.config.tts_api_key:
             headers["Authorization"] = f"Bearer {self.config.tts_api_key}"
+        
+        print(f"[AIClient] TTS Request to {self.config.tts_endpoint} | model={payload.get('model', '(none)')} | voice={voice_val}")
         
         async with session.post(
             self.config.tts_endpoint,

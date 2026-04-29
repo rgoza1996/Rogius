@@ -1,0 +1,10 @@
+{
+  "chatEndpoint": "http://100.71.89.62:1234/v1/chat/completions",
+  "chatApiKey": "",
+  "chatModel": "qwen_qwen3.5-27b",
+  "chatContextLength": 262144,
+  "ttsEndpoint": "http://100.71.89.62:8880/v1/audio/speech",
+  "ttsApiKey": "",
+  "ttsVoice": "af_bella",
+  "autoPlayAudio": false
+}

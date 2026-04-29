@@ -1,0 +1,73 @@
+{
+  "id": "chat-1777392441647-ea4f4szue",
+  "title": "Create and Delete Files",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Make 5 .txt files named poem_x in D:/ and put a poem in them. Then delete a random 4 of them.\" (should use fallback plan if JSON parsing fails)",
+      "messageId": "msg-1777392444811-rxohknjo4",
+      "branches": [],
+      "currentBranchIndex": -1
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n```terminal\n[Agentic Plan Complete] Create 5 poem files and delete 4 of them\nExecuted: 0/7 steps\nStatus: running\n\nExecution Log:\nError: No plan could be created\n```",
+      "messageId": "msg-1777393343540-xnx444hq2",
+      "branches": [
+        {
+          "messageId": "msg-1777392929509-y4w2habnb",
+          "content": "Error: Failed to fetch",
+          "timestamp": 1777393343540,
+          "subtree": []
+        }
+      ],
+      "currentBranchIndex": -1,
+      "agentExecution": {
+        "goal": "Create 5 poem files and delete 4 of them",
+        "agents": [
+          {
+            "name": "Investigator",
+            "phase": "investigation",
+            "status": "pending",
+            "timestamp": 1777393345456
+          },
+          {
+            "name": "Planner",
+            "phase": "planning",
+            "status": "pending",
+            "timestamp": 1777393345456
+          },
+          {
+            "name": "Executor",
+            "phase": "execution",
+            "status": "pending",
+            "timestamp": 1777393345456
+          },
+          {
+            "name": "Verifier",
+            "phase": "verification",
+            "status": "pending",
+            "timestamp": 1777393345456
+          },
+          {
+            "name": "Reporter",
+            "phase": "reporting",
+            "status": "pending",
+            "timestamp": 1777393345456
+          }
+        ],
+        "currentAgentIndex": 0,
+        "totalSteps": 0,
+        "completedSteps": 0,
+        "isExpanded": true,
+        "log": [
+          "Starting multi-agent workflow..."
+        ]
+      }
+    }
+  ],
+  "createdAt": 1777392441647,
+  "updatedAt": 1777393372178,
+  "userTitled": false,
+  "userMessageCount": 1
+}

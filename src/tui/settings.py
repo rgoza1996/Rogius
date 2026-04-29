@@ -22,6 +22,7 @@ class TUISettings:
     tts_endpoint: str = "http://100.71.89.62:8880/v1/audio/speech"
     tts_api_key: str = ""
     tts_voice: str = "af_bella"
+    tts_model: str = ""  # Optional: model ID for Groq/OpenAI-style TTS (e.g. canopylabs/orpheus-v1-english)
     auto_play_audio: bool = False
     
     # UI Settings
@@ -171,6 +172,7 @@ def get_api_config_from_settings(settings: Optional[TUISettings] = None) -> dict
         tts_endpoint=settings.tts_endpoint,
         tts_api_key=settings.tts_api_key,
         tts_voice=settings.tts_voice,
+        tts_model=getattr(settings, 'tts_model', ''),
         auto_play_audio=settings.auto_play_audio
     )
 

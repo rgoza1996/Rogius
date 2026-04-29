@@ -1,24 +1,24 @@
 {
-  "id": "chat-1776267112021-9qh4qag2s",
+  "id": "chat-1777491426766-gno6dn6t7",
   "title": "New Chat",
   "messages": [
     {
       "role": "user",
       "content": "hi",
-      "messageId": "msg-1776267113906-xz25vqcf5",
+      "messageId": "msg-1777491428414-wb1dxtk6e",
       "branches": [],
       "currentBranchIndex": -1
     },
     {
       "role": "assistant",
       "content": "Error: API error: 413 - {\"error\":{\"message\":\"Request too large for model `qwen/qwen3-32b` in organization `org_01kpv3wcnqfgtb5t2z3rtckb0r` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 7293, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}\n",
-      "messageId": "msg-1777491589575-71piw19bo",
+      "messageId": "msg-1777491841177-gmlwc1eur",
       "branches": [],
       "currentBranchIndex": -1
     }
   ],
-  "createdAt": 1776267112021,
-  "updatedAt": 1777491593991,
+  "createdAt": 1777491426766,
+  "updatedAt": 1777491842050,
   "userTitled": false,
   "userMessageCount": 1
 }

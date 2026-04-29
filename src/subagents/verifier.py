@@ -42,8 +42,9 @@ class VerifierAgent:
         # Check if this is a file creation operation
         action_text = f"{description} {logical_action}".lower()
         is_file_creation = any(keyword in action_text for keyword in [
-            "create", "write", "save", "generate", "output to", "write to"
-        ]) and "file" in action_text
+            "create", "write", "save", "generate", "output to", "write to", 
+            "screenshot", "image", "capture", "picture", "take"
+        ]) and any(obj in action_text for obj in ["file", "screenshot", "image", "png"])
 
         if not is_file_creation:
             return None
@@ -264,6 +265,21 @@ Determine if this step succeeded and what to do next.
                 next_action = "retry"
                 failure_hint_str = tool_verification.get("failure_hint", "wrong_cwd")
                 print(f"[Verifier] FAIL: File not found at {file_created.get('path')} despite tool success")
+            
+            # Specific verification for screenshots/images
+            if "screenshot" in step.logical_action.lower() or "image" in step.logical_action.lower():
+                # Check if browser tool captured any screenshots
+                has_screenshots = tool_verification.get("screenshot_count", 0) > 0
+                
+                # Check if terminal command created an image file (if we could extract path)
+                has_image_file = file_created and file_created.get("exists", False) and any(ext in file_created.get("path", "").lower() for ext in [".png", ".jpg", ".jpeg", ".bmp"])
+                
+                if not (has_screenshots or has_image_file):
+                    # No evidence of image creation
+                    success = False
+                    next_action = "retry"
+                    failure_hint_str = "missing_artifact"
+                    print(f"[Verifier] FAIL: No image or screenshot evidence found for logical action: {step.logical_action}")
 
         # Update step status
         artifacts = tool_result.artifacts if hasattr(tool_result, 'artifacts') else {}
@@ -333,7 +349,7 @@ Determine if this step succeeded and what to do next.
         Returns:
             Formatted string with tool-specific failure hints
         """
-        from ..tools import ToolRegistry
+
         
         tool = ToolRegistry.get(action_type)
         if tool is None:

@@ -11,6 +11,7 @@ from typing import Optional, AsyncGenerator, Any
 from datetime import datetime
 
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import aiohttp
 from fastapi import FastAPI, HTTPException, BackgroundTasks
@@ -48,7 +49,7 @@ except ImportError:
 
 # Import Renamer agent
 try:
-    from ..subagents.renamer import RenamerAgent
+    from subagents.renamer import RenamerAgent
     RENAMER_AVAILABLE = True
 except ImportError:
     RENAMER_AVAILABLE = False
@@ -101,7 +102,7 @@ _agent_sessions: dict[str, Any] = {}
 _main_agent: Optional[RogiusMainAgent] = None
 
 # Renamer agent global state
-_renamer_agent: Optional[RenamerAgent] = None
+_renamer_agent: Optional['RenamerAgent'] = None
 _is_chat_streaming: bool = False
 
 
@@ -168,13 +169,33 @@ def _get_main_agent() -> Optional[RogiusMainAgent]:
                 
                 # Try to parse as JSON
                 try:
-                    # Remove markdown code blocks if present
-                    if full_content.startswith("```json"):
-                        full_content = full_content[7:]
-                    if full_content.startswith("```"):
-                        full_content = full_content[3:]
-                    if full_content.endswith("```"):
-                        full_content = full_content[:-3]
+                    import re
+                    # Remove markdown code blocks if present anywhere in the text
+                    json_match = re.search(r'```(?:json)?\s*([\s\S]*?)```', full_content)
+                    if json_match:
+                        full_content = json_match.group(1).strip()
+                    else:
+                        # Find first '{' or '[' and last '}' or ']'
+                        start_obj = full_content.find('{')
+                        start_arr = full_content.find('[')
+                        
+                        start_idx = -1
+                        if start_obj != -1 and start_arr != -1:
+                            start_idx = min(start_obj, start_arr)
+                        elif start_obj != -1:
+                            start_idx = start_obj
+                        elif start_arr != -1:
+                            start_idx = start_arr
+                            
+                        if start_idx != -1:
+                            if full_content[start_idx] == '{':
+                                end_idx = full_content.rfind('}')
+                            else:
+                                end_idx = full_content.rfind(']')
+                                
+                            if end_idx != -1 and end_idx >= start_idx:
+                                full_content = full_content[start_idx:end_idx+1]
+                                
                     full_content = full_content.strip()
                     
                     parsed = json.loads(full_content)
@@ -219,6 +240,7 @@ def get_ai_client() -> AIClient:
             tts_endpoint=settings.tts_endpoint,
             tts_api_key=settings.tts_api_key,
             tts_voice=settings.tts_voice,
+            tts_model=getattr(settings, 'tts_model', ''),
             auto_play_audio=settings.auto_play_audio
         )
         ai_client = AIClient(config)
@@ -359,6 +381,7 @@ class SettingsResponse(BaseModel):
     tts_endpoint: str
     tts_api_key: str
     tts_voice: str
+    tts_model: str = ""  # Optional TTS model ID (Groq-style)
     auto_play_audio: bool
     max_retries: int
 
@@ -666,7 +689,9 @@ async def multistep_execute_agentic_stream(request: MultistepAgenticRequest):
             async for event in agent.execute_streaming(request.goal, max_retries=settings.max_retries):
                 yield f"data: {json.dumps(event)}\n\n"
         except Exception as e:
-            yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
+            import traceback
+            tb_str = traceback.format_exc()
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e), 'traceback': tb_str})}\n\n"
 
     return StreamingResponse(
         event_generator(),
@@ -910,6 +935,7 @@ async def get_settings():
         tts_endpoint=settings.tts_endpoint,
         tts_api_key=settings.tts_api_key,
         tts_voice=settings.tts_voice,
+        tts_model=getattr(settings, 'tts_model', ''),
         auto_play_audio=settings.auto_play_audio,
         max_retries=settings.max_retries
     )
@@ -927,8 +953,14 @@ async def update_settings(new_settings: SettingsResponse):
     settings.tts_endpoint = new_settings.tts_endpoint
     settings.tts_api_key = new_settings.tts_api_key
     settings.tts_voice = new_settings.tts_voice
+    settings.tts_model = getattr(new_settings, 'tts_model', '')
     settings.auto_play_audio = new_settings.auto_play_audio
     settings.max_retries = new_settings.max_retries
+    
+    # Auto-fix common endpoint mistakes
+    if "api.groq.com" in settings.tts_endpoint and "chat/completions" in settings.tts_endpoint:
+        print(f"[Settings] Auto-fixing Groq TTS endpoint from chat to audio")
+        settings.tts_endpoint = settings.tts_endpoint.replace("chat/completions", "audio/speech")
     
     save_settings(settings)
     
@@ -1017,8 +1049,14 @@ def _get_chat_file_path(chat_id: str) -> Path:
 @app.get("/chats", response_model=ChatListResponse)
 async def list_chats():
     """List all chat sessions."""
-    index = _load_chat_index()
-    return ChatListResponse(chats=index)
+    try:
+        index = _load_chat_index()
+        return ChatListResponse(chats=index)
+    except Exception as e:
+        import traceback
+        print(f"[ERROR] Failed to load chats: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Failed to load chats: {str(e)}")
 
 
 @app.get("/chats/{chat_id}")
@@ -1495,3 +1533,5 @@ async def renamer_queue():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+# Trigger reload

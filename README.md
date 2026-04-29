@@ -103,6 +103,117 @@ Web automation using Playwright with DOM-based interaction (not OCR).
 }
 ```
 
+### FileEditTool
+
+Structured file editing with precise operations. Designed for local AI workflows.
+
+**Action Type:** `file_edit`
+
+**Operations:**
+- `create` - Create new file with content
+- `read` - Read file contents
+- `replace` - Replace text (exact or regex)
+- `insert` - Insert text at line/position
+- `delete` - Delete lines or text
+- `append` - Append to end of file
+
+**Example:**
+```python
+{
+    "type": "file_edit",
+    "payload": {
+        "file_path": "src/main.py",
+        "operations": [
+            {"type": "replace", "old_text": "def old_func():", "new_text": "def new_func():"},
+            {"type": "append", "text": "# End of file"}
+        ]
+    },
+    "description": "Update function name and add comment",
+    "timeout": 30
+}
+```
+
+### GitTool
+
+Version control operations with safety checks.
+
+**Action Type:** `git_command`
+
+**Features:**
+- Readonly operations don't require confirmation
+- Modifying operations require `confirmed: true`
+- Parsed output (status, commits, diffs)
+- Automatic failure classification
+
+**Example:**
+```python
+{
+    "type": "git_command",
+    "payload": {
+        "operation": "commit",
+        "message": "Update main.py",
+        "files": ["src/main.py"],
+        "confirmed": true
+    },
+    "description": "Commit changes",
+    "timeout": 30
+}
+```
+
+### SearchTool
+
+Fast code search using ripgrep (with fallbacks to grep/Python).
+
+**Action Type:** `code_search`
+
+**Features:**
+- Text and regex pattern matching
+- File type filtering
+- Context lines around matches
+- Structured results with positions
+
+**Example:**
+```python
+{
+    "type": "code_search",
+    "payload": {
+        "query": "def.*Tool",
+        "use_regex": true,
+        "file_type": "py",
+        "max_results": 20
+    },
+    "description": "Find Tool class definitions",
+    "timeout": 30
+}
+```
+
+### ModelManagementTool
+
+Switch between local AI models and external APIs.
+
+**Action Type:** `model_manage`
+
+**Operations:**
+- `status` - Show current model and connectivity
+- `list` - List available models
+- `switch` - Change to different model/endpoint
+- `test` - Test endpoint connectivity
+- `configure` - Update settings
+
+**Example:**
+```python
+{
+    "type": "model_manage",
+    "payload": {
+        "operation": "switch",
+        "model": "llama3.2",
+        "endpoint": "http://localhost:11434/v1/chat/completions"
+    },
+    "description": "Switch to Ollama with Llama 3.2",
+    "timeout": 30
+}
+```
+
 ## Installation
 
 ### Prerequisites
@@ -211,6 +322,10 @@ Rogius/
 │   │   ├── tool_registry.py
 │   │   ├── terminal_tool.py
 │   │   ├── browser_tool.py
+│   │   ├── file_edit_tool.py
+│   │   ├── git_tool.py
+│   │   ├── search_tool.py
+│   │   ├── model_management_tool.py
 │   │   └── __init__.py
 │   ├── tui/                # Terminal UI
 │   ├── app/                # Next.js webapp

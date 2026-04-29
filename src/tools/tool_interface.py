@@ -14,9 +14,10 @@ class ActionType(str, Enum):
     """Types of actions that tools can execute."""
     TERMINAL_COMMAND = "terminal_command"
     WEB_CRAWL = "web_crawl"
-    # Future action types:
-    # FILE_EDIT = "file_edit"
-    # API_CALL = "api_call"
+    FILE_EDIT = "file_edit"
+    GIT_COMMAND = "git_command"
+    CODE_SEARCH = "code_search"
+    MODEL_MANAGE = "model_manage"
 
 
 class Action(BaseModel):

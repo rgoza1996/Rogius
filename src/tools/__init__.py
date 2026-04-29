@@ -20,6 +20,10 @@ from .tool_registry import (
 # Tool implementations (imports trigger @tool registration)
 from .terminal_tool import TerminalTool
 from .browser_tool import BrowserTool
+from .file_edit_tool import FileEditTool
+from .git_tool import GitTool
+from .search_tool import SearchTool
+from .model_management_tool import ModelManagementTool
 from .web_search import web_search
 from .rag_search import RAGSearchClient, RAGResult, rag_search
 from .rag_indexer import ProjectIndexer, IndexConfig, index_project
@@ -35,6 +39,10 @@ __all__ = [
     # Tool implementations
     "TerminalTool",
     "BrowserTool",
+    "FileEditTool",
+    "GitTool",
+    "SearchTool",
+    "ModelManagementTool",
     # Existing tools
     "web_search",
     "RAGSearchClient",

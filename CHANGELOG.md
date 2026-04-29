@@ -6,6 +6,51 @@ All notable changes to Rogius will be documented in this file.
 
 ### Added
 
+#### New Tools (Phase 1 - Core Local AI Workflow)
+
+- **FileEditTool** (`src/tools/file_edit_tool.py`)
+  - Structured file editing operations (create, read, replace, insert, delete, append)
+  - Multi-operation atomic transactions
+  - Regex and exact text matching for replacements
+  - File creation verification
+  - Automatic failure recovery (create file if missing, enable overwrite)
+  - Designed for precise file manipulation in local AI workflows
+
+- **GitTool** (`src/tools/git_tool.py`)
+  - Version control operations with safety checks
+  - Readonly operations: status, log, diff, show, branch, remote
+  - Modifying operations require `confirmed: true` flag
+  - Parsed output (status, log commits, diff files, branches)
+  - Failure classification: not_a_repo, permission_denied, merge_conflict, etc.
+  - Safe defaults prevent accidental destructive operations
+
+- **SearchTool** (`src/tools/search_tool.py`)
+  - Fast code search using ripgrep (with grep/Python fallbacks)
+  - Text and regex pattern matching
+  - File type and pattern filtering
+  - Context lines around matches
+  - Structured results with file paths, line numbers, match positions
+  - Optimized for local codebase exploration
+
+- **ModelManagementTool** (`src/tools/model_management_tool.py`)
+  - Switch between local AI models and external APIs
+  - Operations: status, list, switch, test, configure
+  - Auto-detect provider type (LM Studio, Ollama, OpenAI, Anthropic, Groq)
+  - Test endpoint connectivity before switching
+  - Support for local-first with external fallback
+  - Configuration persistence in `rogius.config.json`
+
+#### Updated Prompts
+- **Planner Prompt** (`src/subagents/prompts.py`)
+  - Added action type selection guide for new tools
+  - Documented when to use file_edit vs terminal_command
+  - Documented when to use git_command vs terminal_command
+
+- **Executor Prompt** (`src/subagents/prompts.py`)
+  - Added complete schemas for all 6 action types
+  - Included examples for file_edit, git_command, code_search, model_manage
+  - Added rules for tool selection (prefer specific tools over generic terminal)
+
 #### Tool-Based Architecture Refactoring
 - **Tool Interface** (`src/tools/tool_interface.py`)
   - Base `Tool` class with `execute()`, `verify()`, and `apply_failure_fix()` methods

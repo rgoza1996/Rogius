@@ -7,7 +7,6 @@ A standalone Python TUI using Textual for AI chat with terminal integration.
 import asyncio
 import json
 import sys
-import time
 from pathlib import Path
 from typing import Optional
 
@@ -15,8 +14,7 @@ from typing import Optional
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, Vertical, VerticalScroll, Container
-from textual.reactive import reactive
+from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import (
     Input,
     Static,
@@ -26,28 +24,25 @@ from textual.widgets import (
     Label,
     ListView,
     ListItem,
-    TextArea,
     TabbedContent,
     TabPane,
     ProgressBar,
-    Collapsible,
     Checkbox
 )
 from textual.binding import Binding
 from textual.screen import ModalScreen
-from textual.color import Color
 from textual.message import Message
 
-from launcher import OSDetector, OperatingSystem
+from launcher import OSDetector
 from shell_runner import ShellRunner, CommandResult
 from multistep import (
     PlanManager, MultiStepPlan, Step, StepStatus, PlanStatus,
-    create_plan, get_plan_progress, modify_step, skip_step, add_step
+    get_plan_progress, modify_step, skip_step
 )
-from ai_client import AIClient, ChatMessage, APIConfig, ConversationManager
+from ai_client import AIClient, ConversationManager
 from settings import (
     load_settings, save_settings, TUISettings,
-    get_api_config_from_settings, update_settings
+    get_api_config_from_settings
 )
 
 
@@ -941,7 +936,6 @@ class RogiusTUI(App):
             return "Plan completed"
         
         elif tool_name == "modify_step":
-            step_index = args.get("stepIndex")
             new_command = args.get("newCommand", "")
             new_description = args.get("newDescription")
             
@@ -951,7 +945,6 @@ class RogiusTUI(App):
             return "Failed to modify step"
         
         elif tool_name == "skip_step":
-            step_index = args.get("stepIndex")
             if self.plan_manager.skip_current_step():
                 self._update_plan_widget()
                 return "Step skipped"
@@ -960,7 +953,6 @@ class RogiusTUI(App):
         elif tool_name == "add_step":
             description = args.get("description", "")
             command = args.get("command", "")
-            after_index = args.get("afterStepIndex")
             
             if self.plan_manager.add_step_after_current(description, command):
                 self._update_plan_widget()
@@ -1014,7 +1006,7 @@ class RogiusTUI(App):
                 await asyncio.sleep(0.1)
                 self._update_plan_widget()
             
-            result = await task
+            await task
             self._update_plan_widget()
         
         self.is_executing_plan = False
@@ -1099,7 +1091,7 @@ class RogiusTUI(App):
             # Execute as terminal command
             command = content[1:].strip()
             self.add_message("user", f"Terminal: {command}")
-            result = self.execute_terminal_command(command)
+            self.execute_terminal_command(command)
         elif content.startswith("/"):
             # Handle slash commands
             self.handle_slash_command(content)

@@ -941,7 +941,6 @@ class RogiusTUI(App):
             return "Plan completed"
         
         elif tool_name == "modify_step":
-            step_index = args.get("stepIndex")
             new_command = args.get("newCommand", "")
             new_description = args.get("newDescription")
             
@@ -951,7 +950,6 @@ class RogiusTUI(App):
             return "Failed to modify step"
         
         elif tool_name == "skip_step":
-            step_index = args.get("stepIndex")
             if self.plan_manager.skip_current_step():
                 self._update_plan_widget()
                 return "Step skipped"
@@ -960,7 +958,6 @@ class RogiusTUI(App):
         elif tool_name == "add_step":
             description = args.get("description", "")
             command = args.get("command", "")
-            after_index = args.get("afterStepIndex")
             
             if self.plan_manager.add_step_after_current(description, command):
                 self._update_plan_widget()

@@ -158,34 +158,87 @@ export function useChat(): UseChatReturn {
   // Track last saved messages to detect actual changes vs just selection
   const lastSavedMessagesRef = useRef<BranchedMessage[]>([])
 
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pendingSaveRef = useRef<{ chat: ChatSession, messages: BranchedMessage[] } | null>(null)
+
+  // Flush on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+      if (pendingSaveRef.current) {
+        const { chat, messages } = pendingSaveRef.current
+        const updatedChat: ChatSession = {
+          ...chat,
+          messages: JSON.parse(JSON.stringify(messages)),
+          updatedAt: Date.now()
+        }
+        saveChat(updatedChat).catch(e => console.error('[useChat] Failed to save on unmount:', e))
+      }
+    }
+  }, [])
+
   // Save chat when messages actually change (not just on selection)
   useEffect(() => {
     if (currentChat && messages.length > 0) {
       const lastSaved = lastSavedMessagesRef.current
-      // Only save if messages are different from last saved
-      const messagesChanged =
-        lastSaved.length !== messages.length ||
-        JSON.stringify(lastSaved) !== JSON.stringify(messages)
 
-      console.log('[useChat] Save check:', { 
-        chatId: currentChat.id, 
-        messageCount: messages.length, 
-        lastSavedCount: lastSaved.length, 
-        messagesChanged 
-      })
+      // Fast check: length changed or the last message's content/role changed
+      let messagesChanged = false
+      if (lastSaved.length !== messages.length) {
+        messagesChanged = true
+      } else if (messages.length > 0) {
+        const lastMsg = messages[messages.length - 1]
+        const lastSavedMsg = lastSaved[lastSaved.length - 1]
+        if (lastMsg.content !== lastSavedMsg?.content || lastMsg.role !== lastSavedMsg?.role) {
+          messagesChanged = true
+        } else {
+          // Fallback to deep check if length and last message are identical
+          messagesChanged = JSON.stringify(lastSaved) !== JSON.stringify(messages)
+        }
+      }
 
       if (messagesChanged) {
-        const updatedChat: ChatSession = {
-          ...currentChat,
-          messages: JSON.parse(JSON.stringify(messages)), // Deep clone to ensure clean serialization
-          updatedAt: Date.now()
+        // If chat changed, save the previous one immediately
+        if (pendingSaveRef.current && pendingSaveRef.current.chat.id !== currentChat.id) {
+          if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current)
+            saveTimeoutRef.current = null
+          }
+          const { chat: oldChat, messages: oldMessages } = pendingSaveRef.current
+          const updatedChat: ChatSession = {
+            ...oldChat,
+            messages: JSON.parse(JSON.stringify(oldMessages)),
+            updatedAt: Date.now()
+          }
+          saveChat(updatedChat).catch(error => {
+            console.error('[useChat] Failed to save old chat:', error)
+          })
         }
-        console.log('[useChat] Saving chat with', messages.length, 'messages')
-        saveChat(updatedChat).catch(error => {
-          console.error('[useChat] Failed to save chat:', error)
-          // Don't throw - saving is best-effort, app should continue working
-        })
-        lastSavedMessagesRef.current = JSON.parse(JSON.stringify(messages)) // Clone for comparison
+
+        pendingSaveRef.current = { chat: currentChat, messages }
+
+        // Throttle saves to once per second during continuous updates (e.g. streaming)
+        if (!saveTimeoutRef.current) {
+          saveTimeoutRef.current = setTimeout(() => {
+            if (pendingSaveRef.current) {
+              const { chat, messages: msgs } = pendingSaveRef.current
+              const updatedChat: ChatSession = {
+                ...chat,
+                messages: JSON.parse(JSON.stringify(msgs)),
+                updatedAt: Date.now()
+              }
+              console.log('[useChat] Throttled saving chat with', msgs.length, 'messages')
+              saveChat(updatedChat).catch(error => {
+                console.error('[useChat] Failed to save chat:', error)
+              })
+              lastSavedMessagesRef.current = JSON.parse(JSON.stringify(msgs))
+              pendingSaveRef.current = null
+            }
+            saveTimeoutRef.current = null
+          }, 1000)
+        }
       }
     }
   }, [messages, currentChat])

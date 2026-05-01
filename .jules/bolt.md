@@ -1,0 +1,3 @@
+## 2026-05-01 - React Streaming Renders vs Backend Saving
+**Learning:** During streaming inference, a Next.js/React frontend will often update a `messages` array for every token received. If you trigger an expensive operation (like an API save) with an `useEffect` tracking this array combined with a deep equality check (e.g. `JSON.stringify`), you will bottleneck the frontend layout engine and spam the backend API.
+**Action:** When a React state array receives highly frequent updates (like token streaming), implement a quick heuristic (like comparing `array.length` or the last element's content) to detect change, and use a debounced/throttled backend save (`setTimeout`).

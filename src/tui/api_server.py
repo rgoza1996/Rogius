@@ -5,6 +5,7 @@ Wraps TUI modules to provide HTTP API for the webapp.
 """
 import asyncio
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Optional, AsyncGenerator, Any
@@ -101,11 +102,11 @@ _agent_sessions: dict[str, Any] = {}
 _main_agent: Optional[RogiusMainAgent] = None
 
 # Renamer agent global state
-_renamer_agent: Optional[RenamerAgent] = None
+_renamer_agent: Optional[Any] = None
 _is_chat_streaming: bool = False
 
 
-def _get_renamer_agent() -> Optional[RenamerAgent]:
+def _get_renamer_agent() -> Optional[Any]:
     """Get or create the Renamer agent."""
     global _renamer_agent
     if _renamer_agent is None and RENAMER_AVAILABLE:
@@ -1011,7 +1012,8 @@ def _save_chat_index(index: list):
 
 def _get_chat_file_path(chat_id: str) -> Path:
     """Get the file path for a specific chat."""
-    return CHAT_STORAGE_DIR / f"{chat_id}.json"
+    safe_chat_id = os.path.basename(chat_id)
+    return CHAT_STORAGE_DIR / f"{safe_chat_id}.json"
 
 
 @app.get("/chats", response_model=ChatListResponse)
@@ -1422,7 +1424,8 @@ async def renamer_toggle_eligibility(request: RenamerToggleRequest):
     If eligible=False, sets userTitled=True.
     If eligible=True, removes userTitled flag.
     """
-    chat_file = CHAT_STORAGE_DIR / f"{request.chat_id}.json"
+    safe_chat_id = os.path.basename(request.chat_id)
+    chat_file = CHAT_STORAGE_DIR / f"{safe_chat_id}.json"
     if not chat_file.exists():
         raise HTTPException(status_code=404, detail="Chat not found")
     

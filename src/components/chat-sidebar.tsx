@@ -93,6 +93,7 @@ export function ChatSidebar({ currentChatId, onSelectChat, onNewChat, onChatDele
       {/* Mobile Toggle Button */}
       <button
         onClick={onToggle}
+        aria-label="Toggle Sidebar"
         className={cn(
           "fixed left-4 top-3 z-[60] p-2 rounded-lg bg-background border border-border shadow-md hover:bg-muted transition-colors lg:hidden",
           isOpen && "hidden"
@@ -129,6 +130,7 @@ export function ChatSidebar({ currentChatId, onSelectChat, onNewChat, onChatDele
                 console.log('[ChatSidebar] New Chat button clicked, calling onNewChat')
                 onNewChat()
               }}
+              aria-label="New Chat"
               className="p-1.5 rounded hover:bg-muted transition-colors"
               title="New Chat"
             >
@@ -136,6 +138,7 @@ export function ChatSidebar({ currentChatId, onSelectChat, onNewChat, onChatDele
             </button>
             <button
               onClick={onToggle}
+              aria-label="Close Sidebar"
               className="p-1.5 rounded hover:bg-muted transition-colors lg:hidden"
             >
               <X className="w-4 h-4" />
@@ -179,6 +182,7 @@ export function ChatSidebar({ currentChatId, onSelectChat, onNewChat, onChatDele
                     />
                     <button
                       onClick={(e) => { e.stopPropagation(); saveEdit(); }}
+                      aria-label="Save Title"
                       className="p-1 rounded hover:bg-muted"
                     >
                       <Check className="w-3 h-3 text-green-500" />
@@ -192,6 +196,7 @@ export function ChatSidebar({ currentChatId, onSelectChat, onNewChat, onChatDele
                     <div className="flex items-center gap-0.5">
                       <button
                         onClick={(e) => { e.stopPropagation(); confirmDelete(chat.id); }}
+                        aria-label="Confirm Delete"
                         className="p-1 rounded hover:bg-muted"
                         title="Confirm delete"
                       >
@@ -199,6 +204,7 @@ export function ChatSidebar({ currentChatId, onSelectChat, onNewChat, onChatDele
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); cancelDelete(); }}
+                        aria-label="Cancel Delete"
                         className="p-1 rounded hover:bg-muted"
                         title="Cancel"
                       >
@@ -214,12 +220,14 @@ export function ChatSidebar({ currentChatId, onSelectChat, onNewChat, onChatDele
                     <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={(e) => startEditing(e, chat)}
+                        aria-label="Edit Chat"
                         className="p-1 rounded hover:bg-muted"
                       >
                         <Edit2 className="w-3 h-3 text-muted-foreground" />
                       </button>
                       <button
                         onClick={(e) => startDeleting(e, chat.id)}
+                        aria-label="Delete Chat"
                         className="p-1 rounded hover:bg-muted"
                       >
                         <Trash2 className="w-3 h-3 text-destructive" />

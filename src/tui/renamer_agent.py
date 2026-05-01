@@ -6,6 +6,7 @@ Processes queue oldest-to-newest when inference engine is idle.
 """
 
 import asyncio
+import os
 import json
 from pathlib import Path
 from typing import Optional, Any
@@ -83,7 +84,8 @@ class RenamerAgent:
         
     def _load_chat(self, chat_id: str) -> Optional[dict]:
         """Load a chat file from storage."""
-        chat_file = self.storage_dir / f"{chat_id}.json"
+        safe_chat_id = os.path.basename(chat_id)
+        chat_file = self.storage_dir / f"{safe_chat_id}.json"
         if not chat_file.exists():
             return None
         try:

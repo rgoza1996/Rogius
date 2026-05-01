@@ -8,6 +8,7 @@ the appropriate shell (bash for Linux, PowerShell for Windows).
 import platform
 import sys
 import os
+import subprocess
 from enum import Enum
 from dataclasses import dataclass
 
@@ -96,9 +97,9 @@ class OSDetector:
         shell_config = OSDetector.get_shell_config(os_type)
         
         # Helper to run command and get output
-        def run_cmd(cmd: str) -> str:
+        def run_cmd(cmd: list[str]) -> str:
             try:
-                result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=5)
+                result = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
                 return result.stdout.strip() if result.returncode == 0 else "not installed"
             except:
                 return "not installed"
@@ -107,21 +108,21 @@ class OSDetector:
         if os_type == OperatingSystem.WINDOWS:
             pkg_manager = "winget (Windows Package Manager)"
             # Check for admin rights on Windows
-            is_admin = run_cmd('powershell -Command "([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)"') == "True"
+            is_admin = run_cmd(["powershell", "-Command", "([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)"]) == "True"
         else:
             # Linux package managers
-            if run_cmd("which apt") != "not installed":
+            if run_cmd(["which", "apt"]) != "not installed":
                 pkg_manager = "apt (Debian/Ubuntu)"
-            elif run_cmd("which yum") != "not installed":
+            elif run_cmd(["which", "yum"]) != "not installed":
                 pkg_manager = "yum (RHEL/CentOS)"
-            elif run_cmd("which pacman") != "not installed":
+            elif run_cmd(["which", "pacman"]) != "not installed":
                 pkg_manager = "pacman (Arch)"
-            elif run_cmd("which apk") != "not installed":
+            elif run_cmd(["which", "apk"]) != "not installed":
                 pkg_manager = "apk (Alpine)"
             else:
                 pkg_manager = "unknown"
             # Check sudo on Linux
-            is_admin = run_cmd("sudo -n true 2>/dev/null && echo 'yes' || echo 'no'") == "yes"
+            is_admin = run_cmd(["sudo", "-n", "true"]) == ""
         
         return {
             "os": platform.system(),
@@ -135,8 +136,8 @@ class OSDetector:
             "username": os.getenv("USER") or os.getenv("USERNAME") or "unknown",
             "package_manager": pkg_manager,
             "has_sudo": is_admin,
-            "node_version": run_cmd("node --version"),
-            "docker_version": run_cmd("docker --version")
+            "node_version": run_cmd(["node", "--version"]),
+            "docker_version": run_cmd(["docker", "--version"])
         }
 
 

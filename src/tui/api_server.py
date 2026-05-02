@@ -1012,7 +1012,10 @@ def _save_chat_index(index: list):
 
 def _get_chat_file_path(chat_id: str) -> Path:
     """Get the file path for a specific chat."""
-    safe_chat_id = os.path.basename(chat_id)
+    # Replace backslashes with forward slashes to prevent Windows-style path traversal
+    # from bypassing os.path.basename on Linux/Unix systems.
+    normalized_id = chat_id.replace("\\", "/")
+    safe_chat_id = os.path.basename(normalized_id)
     return CHAT_STORAGE_DIR / f"{safe_chat_id}.json"
 
 

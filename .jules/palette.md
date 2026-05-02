@@ -1,0 +1,3 @@
+## 2026-05-02 - Custom Toggle Components Need Explicit ARIA Roles
+**Learning:** When building custom toggle switches using `<button>` elements, simply using visual cues or standard button semantics is insufficient for screen reader users. The button requires `role="switch"` to properly communicate its function as a toggle, and `aria-checked` to communicate its current boolean state. Additionally, `aria-labelledby` should be used to tie the toggle back to its descriptive text label.
+**Action:** Always ensure custom UI components that mimic native input types (like checkboxes or switches) include the corresponding ARIA roles and state attributes (`role="switch"`, `aria-checked`) for proper accessibility.

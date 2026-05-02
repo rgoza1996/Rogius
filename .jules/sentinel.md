@@ -1,0 +1,4 @@
+## 2024-05-02 - Path Traversal bypass with Windows-style separators
+**Vulnerability:** A path traversal vulnerability existed in `_get_chat_file_path(chat_id: str)` where `os.path.basename` was used to sanitize paths. An attacker could supply Windows-style directory traversal sequences (e.g. `..\\..\\..\\`) which bypassed the sanitization logic entirely on Linux/Unix systems, leading to arbitrary file read/write within the filesystem when interpreted by paths that correctly handle the backslashes.
+**Learning:** `os.path.basename` relies on the host OS's native path separator. When a Linux/Unix system attempts to sanitize a path string containing Windows directory separators (`\`), it does not recognize them as directory delimiters and treats them as literal characters.
+**Prevention:** Always normalize the path separators (e.g. `chat_id.replace("\\", "/")`) before passing untrusted paths into functions like `os.path.basename` on POSIX systems.

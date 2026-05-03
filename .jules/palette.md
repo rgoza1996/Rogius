@@ -1,0 +1,3 @@
+## 2024-05-03 - Accessible Custom React Toggles
+**Learning:** Found an accessibility issue pattern specific to this app's components: Custom toggle switches built using `<button>` elements were lacking explicit ARIA roles (`role="switch"`), states (`aria-checked`), and bindings (`aria-labelledby`). This made them opaque to screen readers which wouldn't announce their state correctly or associate them with their text labels.
+**Action:** When building or modifying custom toggle switches using `<button>`, always ensure they include `role="switch"`, `aria-checked={state}`, and `aria-labelledby="[label-id]"` (with an `id` on the corresponding `<label>` or `<span>`).

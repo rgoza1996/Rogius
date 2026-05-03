@@ -1,0 +1,3 @@
+## 2024-05-03 - [Memoization of Streaming Markdown Rendering]
+**Learning:** During chat interactions where AI streams responses chunk by chunk, inline string parsing and regex matching (like markdown processing for terminal and code blocks) execute on the entire text string over and over again for every chunk added. Without `React.memo()`, this results in an O(N) performance bottleneck for each React re-render.
+**Action:** Always extract expensive string manipulation and markdown regex mapping into isolated, memoized sub-components when dealing with frequently updating views like streamed AI responses.

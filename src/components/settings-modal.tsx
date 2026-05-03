@@ -81,6 +81,7 @@ export function SettingsModal({ config, systemInfo, onSave, onClose }: SettingsM
           <h2 className="text-lg font-semibold">Settings</h2>
           <button
             onClick={onClose}
+            aria-label="Close Settings"
             className="p-1 rounded hover:bg-muted transition-colors"
           >
             <X className="w-5 h-5" />
@@ -179,6 +180,7 @@ export function SettingsModal({ config, systemInfo, onSave, onClose }: SettingsM
                   />
                   <button
                     type="button"
+                    aria-label={showChatKey ? "Hide API Key" : "Show API Key"}
                     onClick={() => setShowChatKey(!showChatKey)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
@@ -251,9 +253,12 @@ export function SettingsModal({ config, systemInfo, onSave, onClose }: SettingsM
                     <h3 className="text-sm font-medium">System Prompt</h3>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">Allow editing</span>
+                    <span id="allow-editing-label" className="text-xs text-muted-foreground">Allow editing</span>
                     <button
                       type="button"
+                      role="switch"
+                      aria-checked={formData.systemPromptEditable}
+                      aria-labelledby="allow-editing-label"
                       onClick={() => setFormData({ ...formData, systemPromptEditable: !formData.systemPromptEditable })}
                       className={cn(
                         "relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -401,11 +406,14 @@ export function SettingsModal({ config, systemInfo, onSave, onClose }: SettingsM
                   
                   {/* Infinite Mode Checkbox */}
                   <div className="flex items-center justify-between">
-                    <label className="text-sm text-muted-foreground">
+                    <label id="infinite-retries-label" className="text-sm text-muted-foreground">
                       Infinite retries (disable circuit breaker)
                     </label>
                     <button
                       type="button"
+                      role="switch"
+                      aria-checked={formData.maxRetries >= 1000}
+                      aria-labelledby="infinite-retries-label"
                       onClick={() => setFormData({ 
                         ...formData, 
                         maxRetries: formData.maxRetries >= 1000 ? 999 : 1000 
@@ -668,6 +676,7 @@ ${chats.map(c => `  ${c.id}.json: ${c.title.substring(0, 30)} (${c.messages.leng
                   />
                   <button
                     type="button"
+                    aria-label={showTtsKey ? "Hide TTS API Key" : "Show TTS API Key"}
                     onClick={() => setShowTtsKey(!showTtsKey)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
@@ -693,11 +702,14 @@ ${chats.map(c => `  ${c.id}.json: ${c.title.substring(0, 30)} (${c.messages.leng
               </div>
 
               <div className="flex items-center justify-between pt-4">
-                <label className="text-sm font-medium">
+                <label id="auto-play-audio-label" className="text-sm font-medium">
                   Auto-play audio for assistant responses
                 </label>
                 <button
                   type="button"
+                  role="switch"
+                  aria-checked={formData.autoPlayAudio}
+                  aria-labelledby="auto-play-audio-label"
                   onClick={() => setFormData({ ...formData, autoPlayAudio: !formData.autoPlayAudio })}
                   className={cn(
                     "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",

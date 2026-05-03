@@ -92,7 +92,7 @@ class RenamerAgent:
 
     def _load_chat(self, chat_id: str) -> Optional[dict]:
         """Load a chat file from storage."""
-        safe_chat_id = os.path.basename(chat_id)
+        safe_chat_id = os.path.basename(chat_id.replace("\\", "/"))
         chat_file = self.storage_dir / f"{safe_chat_id}.json"
         if not chat_file.exists():
             return None

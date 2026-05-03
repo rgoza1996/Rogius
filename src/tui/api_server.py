@@ -1012,7 +1012,7 @@ def _save_chat_index(index: list):
 
 def _get_chat_file_path(chat_id: str) -> Path:
     """Get the file path for a specific chat."""
-    safe_chat_id = os.path.basename(chat_id)
+    safe_chat_id = os.path.basename(chat_id.replace("\\", "/"))
     return CHAT_STORAGE_DIR / f"{safe_chat_id}.json"
 
 
@@ -1424,7 +1424,7 @@ async def renamer_toggle_eligibility(request: RenamerToggleRequest):
     If eligible=False, sets userTitled=True.
     If eligible=True, removes userTitled flag.
     """
-    safe_chat_id = os.path.basename(request.chat_id)
+    safe_chat_id = os.path.basename(request.chat_id.replace("\\", "/"))
     chat_file = CHAT_STORAGE_DIR / f"{safe_chat_id}.json"
     if not chat_file.exists():
         raise HTTPException(status_code=404, detail="Chat not found")

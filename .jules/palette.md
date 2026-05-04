@@ -1,0 +1,3 @@
+## 2024-05-04 - Custom Toggle Switch Accessibility in Settings Modal
+**Learning:** Custom React toggle switches built with `<button>` elements in this codebase's settings modal lacked proper accessibility attributes, causing screen readers to announce them merely as "buttons" without their checked state or explicit labels.
+**Action:** When building or modifying custom toggle switches using `<button>` elements in this project, they must include explicit ARIA roles (`role="switch"`), states (`aria-checked`), and proper bindings (`aria-labelledby`) linked to an ID on their associated descriptive text to ensure proper screen reader support.

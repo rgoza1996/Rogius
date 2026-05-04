@@ -251,9 +251,12 @@ export function SettingsModal({ config, systemInfo, onSave, onClose }: SettingsM
                     <h3 className="text-sm font-medium">System Prompt</h3>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">Allow editing</span>
+                    <span id="label-allow-editing" className="text-xs text-muted-foreground">Allow editing</span>
                     <button
                       type="button"
+                      role="switch"
+                      aria-checked={formData.systemPromptEditable}
+                      aria-labelledby="label-allow-editing"
                       onClick={() => setFormData({ ...formData, systemPromptEditable: !formData.systemPromptEditable })}
                       className={cn(
                         "relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -401,11 +404,14 @@ export function SettingsModal({ config, systemInfo, onSave, onClose }: SettingsM
                   
                   {/* Infinite Mode Checkbox */}
                   <div className="flex items-center justify-between">
-                    <label className="text-sm text-muted-foreground">
+                    <label id="label-infinite-retries" className="text-sm text-muted-foreground">
                       Infinite retries (disable circuit breaker)
                     </label>
                     <button
                       type="button"
+                      role="switch"
+                      aria-checked={formData.maxRetries >= 1000}
+                      aria-labelledby="label-infinite-retries"
                       onClick={() => setFormData({ 
                         ...formData, 
                         maxRetries: formData.maxRetries >= 1000 ? 999 : 1000 
@@ -693,11 +699,14 @@ ${chats.map(c => `  ${c.id}.json: ${c.title.substring(0, 30)} (${c.messages.leng
               </div>
 
               <div className="flex items-center justify-between pt-4">
-                <label className="text-sm font-medium">
+                <label id="label-autoplay-audio" className="text-sm font-medium">
                   Auto-play audio for assistant responses
                 </label>
                 <button
                   type="button"
+                  role="switch"
+                  aria-checked={formData.autoPlayAudio}
+                  aria-labelledby="label-autoplay-audio"
                   onClick={() => setFormData({ ...formData, autoPlayAudio: !formData.autoPlayAudio })}
                   className={cn(
                     "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",

@@ -1,0 +1,4 @@
+## 2024-05-04 - [Path Traversal bypass via Windows Path Separators]
+**Vulnerability:** Path Traversal bypass using backslashes `\` against `os.path.basename` on POSIX systems in `src/tui/api_server.py` and `src/tui/renamer_agent.py`.
+**Learning:** In Python on POSIX systems, `os.path.basename()` does not recognize Windows-style path separators (`\`). This allows path traversal using backslashes (`..\\..\\`) to bypass the `basename` sanitization if the code doesn't explicitly handle backslashes. This is a critical security vulnerability that could be used to read or overwrite arbitrary files on the server.
+**Prevention:** Explicitly normalize path strings using `.replace("\\", "/")` before passing them to `os.path.basename()` or use `pathlib` features carefully after normalization.
